@@ -1,5 +1,4 @@
-use gtk::glib::clone;
-use gtk::prelude::{BoxExt, ButtonExt, GtkWindowExt};
+use gtk::prelude::{BoxExt, ButtonExt, GtkWindowExt, OrientableExt};
 use relm4::{gtk, ComponentParts, ComponentSender, RelmApp, RelmWidgetExt, SimpleComponent};
 
 #[derive(Debug)]
@@ -12,19 +11,43 @@ struct AppModel {
     counter: u8,
 }
 
+#[relm4::component]
 impl SimpleComponent for AppModel {
+    type Init = u8;
     type Input = AppInput;
     type Output = ();
-    type Init = u8;
-    type Root = gtk::Window;
-    type Widgets = AppWidgets;
 
-    fn init_root() -> Self::Root {
-        gtk::Window::builder()
-            .title("Simple App")
-            .default_width(300)
-            .default_height(100)
-            .build()
+    view! {
+        gtk::Window{
+            set_title: Some("Simple App"),
+            set_default_width: 300,
+            set_default_height: 100,
+
+            gtk::Box{
+                set_orientation: gtk::Orientation::Vertical,
+                set_spacing: 5,
+                set_margin_all: 5,
+
+                gtk::Button{
+                    set_label: "Increment",
+                    connect_clicked[sender] => move |_| {
+                        sender.input(AppInput::Increment);
+                    }
+                },
+
+                gtk::Button::with_label("Decrement") {
+                    connect_clicked[sender] => move |_| {
+                        sender.input(AppInput::Decrement);
+                    }
+                },
+
+                gtk::Label {
+                    #[watch]
+                    set_label: &format!("Counter: {}", model.counter),
+                    set_margin_all: 5,
+                }
+            }
+        }
     }
 
     fn init(
@@ -33,33 +56,7 @@ impl SimpleComponent for AppModel {
         sender: ComponentSender<Self>,
     ) -> ComponentParts<Self> {
         let model = AppModel { counter };
-
-        let vbox = gtk::Box::builder()
-            .orientation(gtk::Orientation::Vertical)
-            .spacing(5)
-            .build();
-
-        let inc_button = gtk::Button::with_label("Increment");
-        let dec_button = gtk::Button::with_label("Decrement");
-
-        let label = gtk::Label::new(Some(&format!("Counter: {}", model.counter)));
-        label.set_margin_all(5);
-
-        window.set_child(Some(&vbox));
-        vbox.set_margin_all(5);
-        vbox.append(&inc_button);
-        vbox.append(&dec_button);
-        vbox.append(&label);
-
-        inc_button.connect_clicked(clone!(@strong sender => move |_| {
-            sender.input(AppInput::Increment);
-        }));
-
-        dec_button.connect_clicked(clone!(@strong sender => move |_| {
-            sender.input(AppInput::Decrement);
-        }));
-
-        let widgets = AppWidgets { label };
+        let widgets = view_output!();
         ComponentParts { model, widgets }
     }
 
@@ -72,12 +69,6 @@ impl SimpleComponent for AppModel {
                 self.counter = self.counter.wrapping_sub(1);
             }
         }
-    }
-
-    fn update_view(&self, widgets: &mut Self::Widgets, _sender: ComponentSender<Self>) {
-        widgets
-            .label
-            .set_label(&format!("Counter: {}", self.counter));
     }
 }
 
