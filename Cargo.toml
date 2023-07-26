@@ -1,2 +1,2 @@
 [workspace]
-members = ["simple-counter"]
+members = ["simple-counter", "tracker-app"]

@@ -1029,6 +1029,35 @@ dependencies = [
 ]
 
 [[package]]
+name = "tracker"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ff9636d15e370187f6bf55b79ce62ebf4221998bc0ba1774d7fa208b007f6bf8"
+dependencies = [
+ "tracker-macros",
+]
+
+[[package]]
+name = "tracker-app"
+version = "0.1.0"
+dependencies = [
+ "relm4",
+ "relm4-macros",
+ "tracker",
+]
+
+[[package]]
+name = "tracker-macros"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ca029746fbe0efda3298205de77bf759d7fef23ac97902641e0b49a623b0455f"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.27",
+]
+
+[[package]]
 name = "unicode-ident"
 version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
