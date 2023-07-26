@@ -28,17 +28,12 @@ impl SimpleComponent for AppModel {
                 set_spacing: 5,
                 set_margin_all: 5,
 
-                gtk::Button{
-                    set_label: "Increment",
-                    connect_clicked[sender] => move |_| {
-                        sender.input(AppInput::Increment);
-                    }
+                gtk::Button::with_label("Increment") {
+                    connect_clicked => AppInput::Increment,
                 },
 
                 gtk::Button::with_label("Decrement") {
-                    connect_clicked[sender] => move |_| {
-                        sender.input(AppInput::Decrement);
-                    }
+                    connect_clicked => AppInput::Decrement,
                 },
 
                 gtk::Label {
