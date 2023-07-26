@@ -72,10 +72,6 @@ impl SimpleComponent for AppModel {
     }
 }
 
-struct AppWidgets {
-    label: gtk::Label,
-}
-
 fn main() {
     let app = RelmApp::new("relm4.test.simple_manual");
     app.run::<AppModel>(0);
